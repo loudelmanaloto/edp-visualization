@@ -444,23 +444,33 @@ pre.given{margin:0;white-space:pre;display:block;line-height:1.6}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* appearance: theme mode + accent colour (blue is the default above) */
-:root[data-accent="green"]{--accent:#166534;--accent-soft:#dcf3e3}
-:root[data-accent="orange"]{--accent:#b3410b;--accent-soft:#ffe8d9}
-:root[data-accent="red"]{--accent:#b91c1c;--accent-soft:#fde2e2}
-:root[data-accent="yellow"]{--accent:#8a6100;--accent-soft:#fbf0c8}
-:root[data-accent="pink"]{--accent:#b0179e;--accent-soft:#fbe3f8}
+:root{--accent-2:#7c3aed;--grad:linear-gradient(135deg,var(--accent),var(--accent-2))}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent-2:#c4a5ff}}
+:root[data-theme="dark"]{--accent-2:#c4a5ff}
+:root[data-accent="green"]{--accent:#166534;--accent-soft:#dcf3e3;--accent-2:#0f766e}
+:root[data-accent="orange"]{--accent:#b3410b;--accent-soft:#ffe8d9;--accent-2:#be123c}
+:root[data-accent="red"]{--accent:#b91c1c;--accent-soft:#fde2e2;--accent-2:#9d174d}
+:root[data-accent="yellow"]{--accent:#8a6100;--accent-soft:#fbf0c8;--accent-2:#b3410b}
+:root[data-accent="pink"]{--accent:#b0179e;--accent-soft:#fbe3f8;--accent-2:#6d28d9}
 @media (prefers-color-scheme:dark){
-  :root[data-accent="green"]:not([data-theme="light"]){--accent:#4ade80;--accent-soft:#12331f}
-  :root[data-accent="orange"]:not([data-theme="light"]){--accent:#fb923c;--accent-soft:#3a2212}
-  :root[data-accent="red"]:not([data-theme="light"]){--accent:#f87171;--accent-soft:#3d1517}
-  :root[data-accent="yellow"]:not([data-theme="light"]){--accent:#facc15;--accent-soft:#3a3010}
-  :root[data-accent="pink"]:not([data-theme="light"]){--accent:#f39ce8;--accent-soft:#3b1638}
+  :root[data-accent="green"]:not([data-theme="light"]){--accent:#4ade80;--accent-soft:#12331f;--accent-2:#2dd4bf}
+  :root[data-accent="orange"]:not([data-theme="light"]){--accent:#fb923c;--accent-soft:#3a2212;--accent-2:#fbbf24}
+  :root[data-accent="red"]:not([data-theme="light"]){--accent:#f87171;--accent-soft:#3d1517;--accent-2:#fb923c}
+  :root[data-accent="yellow"]:not([data-theme="light"]){--accent:#facc15;--accent-soft:#3a3010;--accent-2:#fb923c}
+  :root[data-accent="pink"]:not([data-theme="light"]){--accent:#f39ce8;--accent-soft:#3b1638;--accent-2:#c4a5ff}
 }
-:root[data-theme="dark"][data-accent="green"]{--accent:#4ade80;--accent-soft:#12331f}
-:root[data-theme="dark"][data-accent="orange"]{--accent:#fb923c;--accent-soft:#3a2212}
-:root[data-theme="dark"][data-accent="red"]{--accent:#f87171;--accent-soft:#3d1517}
-:root[data-theme="dark"][data-accent="yellow"]{--accent:#facc15;--accent-soft:#3a3010}
-:root[data-theme="dark"][data-accent="pink"]{--accent:#f39ce8;--accent-soft:#3b1638}
+:root[data-theme="dark"][data-accent="green"]{--accent:#4ade80;--accent-soft:#12331f;--accent-2:#2dd4bf}
+:root[data-theme="dark"][data-accent="orange"]{--accent:#fb923c;--accent-soft:#3a2212;--accent-2:#fbbf24}
+:root[data-theme="dark"][data-accent="red"]{--accent:#f87171;--accent-soft:#3d1517;--accent-2:#fb923c}
+:root[data-theme="dark"][data-accent="yellow"]{--accent:#facc15;--accent-soft:#3a3010;--accent-2:#fb923c}
+:root[data-theme="dark"][data-accent="pink"]{--accent:#f39ce8;--accent-soft:#3b1638;--accent-2:#c4a5ff}
+/* gradient accents (text stays solid for readability) */
+.btn.primary{background-image:var(--grad);border-color:transparent}
+nav.tabs a[aria-current="page"]{background-image:var(--grad)}
+.seg button[aria-pressed="true"]{background-image:var(--grad)}
+.top::before{content:"";display:block;height:4px;background:var(--grad)}
+.hub-card:hover{border-color:transparent;background:linear-gradient(var(--surface),var(--surface)) padding-box,var(--grad) border-box}
+.aq-num{background-image:linear-gradient(135deg,var(--accent-soft),color-mix(in srgb,var(--accent-2) 22%,var(--accent-soft)))}
 .brand{order:1}
 .appearance{order:2;margin-left:auto;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 nav.tabs{order:3}
@@ -477,12 +487,12 @@ nav.tabs{order:3}
 </script>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><marker id="dgA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="dg-head"/></marker><marker id="dgM" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="dg-head m"/></marker><marker id="dgR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="dg-head r"/></marker><marker id="dgG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="dg-head g"/></marker></defs></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><linearGradient id="gAcc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--accent)"/><stop offset="1" style="stop-color:var(--accent-2)"/></linearGradient><marker id="dgA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="dg-head"/></marker><marker id="dgM" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="dg-head m"/></marker><marker id="dgR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="dg-head r"/></marker><marker id="dgG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="dg-head g"/></marker></defs></svg>
 
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#loop">
-      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="8" fill="var(--accent)"/><path d="M19 5 L9 19 H16 L14 29 L25 14 H18 Z" fill="var(--accent-ink)"/></svg>
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="8" fill="url(#gAcc)"/><path d="M19 5 L9 19 H16 L14 29 L25 14 H18 Z" fill="var(--accent-ink)"/></svg>
       <div><b>Event-Driven Stepper</b><span>See what runs when, one step at a time</span></div>
     </a>
     <nav class="tabs" aria-label="Topics">
@@ -502,12 +512,12 @@ nav.tabs{order:3}
         <button type="button" data-theme-set="dark" aria-pressed="false">Dark</button>
       </div>
       <div class="swatches" role="group" aria-label="Theme colour">
-        <button type="button" data-accent-set="green" aria-pressed="false" title="Green" aria-label="Green" style="background:#22c55e"></button>
-        <button type="button" data-accent-set="orange" aria-pressed="false" title="Orange" aria-label="Orange" style="background:#f97316"></button>
-        <button type="button" data-accent-set="red" aria-pressed="false" title="Red" aria-label="Red" style="background:#ef4444"></button>
-        <button type="button" data-accent-set="blue" aria-pressed="true" title="Blue" aria-label="Blue" style="background:#3b5bdb"></button>
-        <button type="button" data-accent-set="yellow" aria-pressed="false" title="Yellow" aria-label="Yellow" style="background:#facc15"></button>
-        <button type="button" data-accent-set="pink" aria-pressed="false" title="Pink" aria-label="Pink" style="background:#ec4899"></button>
+        <button type="button" data-accent-set="green" aria-pressed="false" title="Green" aria-label="Green" style="background:linear-gradient(135deg,#22c55e,#14b8a6)"></button>
+        <button type="button" data-accent-set="orange" aria-pressed="false" title="Orange" aria-label="Orange" style="background:linear-gradient(135deg,#f97316,#f43f5e)"></button>
+        <button type="button" data-accent-set="red" aria-pressed="false" title="Red" aria-label="Red" style="background:linear-gradient(135deg,#ef4444,#db2777)"></button>
+        <button type="button" data-accent-set="blue" aria-pressed="true" title="Blue" aria-label="Blue" style="background:linear-gradient(135deg,#3b5bdb,#8b5cf6)"></button>
+        <button type="button" data-accent-set="yellow" aria-pressed="false" title="Yellow" aria-label="Yellow" style="background:linear-gradient(135deg,#facc15,#f97316)"></button>
+        <button type="button" data-accent-set="pink" aria-pressed="false" title="Pink" aria-label="Pink" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)"></button>
       </div>
     </div>
   </div>
