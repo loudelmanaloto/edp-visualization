@@ -442,7 +442,36 @@ pre.given{margin:0;white-space:pre;display:block;line-height:1.6}
   .calc-win{max-width:260px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* appearance: theme mode + accent colour (blue is the default above) */
+:root[data-accent="teal"]{--accent:#0f766e;--accent-soft:#d3f1ec}
+:root[data-accent="purple"]{--accent:#6d28d9;--accent-soft:#ece3ff}
+:root[data-accent="green"]{--accent:#166534;--accent-soft:#dcf3e3}
+:root[data-accent="pink"]{--accent:#b0179e;--accent-soft:#fbe3f8}
+@media (prefers-color-scheme:dark){
+  :root[data-accent="teal"]:not([data-theme="light"]){--accent:#2dd4bf;--accent-soft:#0e3532}
+  :root[data-accent="purple"]:not([data-theme="light"]){--accent:#b197fc;--accent-soft:#2a2049}
+  :root[data-accent="green"]:not([data-theme="light"]){--accent:#4ade80;--accent-soft:#12331f}
+  :root[data-accent="pink"]:not([data-theme="light"]){--accent:#f39ce8;--accent-soft:#3b1638}
+}
+:root[data-theme="dark"][data-accent="teal"]{--accent:#2dd4bf;--accent-soft:#0e3532}
+:root[data-theme="dark"][data-accent="purple"]{--accent:#b197fc;--accent-soft:#2a2049}
+:root[data-theme="dark"][data-accent="green"]{--accent:#4ade80;--accent-soft:#12331f}
+:root[data-theme="dark"][data-accent="pink"]{--accent:#f39ce8;--accent-soft:#3b1638}
+.brand{order:1}
+.appearance{order:2;margin-left:auto;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+nav.tabs{order:3}
+.seg.sm{height:30px}
+.seg.sm button{padding:0 10px;font-size:.8rem;color:var(--muted)}
+.seg.sm button[aria-pressed="true"]{color:var(--accent-ink)}
+.swatches{display:flex;gap:5px;align-items:center}
+.swatches button{width:22px;height:22px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0}
+.swatches button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink)}
 </style>
+<script>
+/* apply the saved appearance before the page paints */
+(function(){try{var t=localStorage.getItem('edp-theme'),a=localStorage.getItem('edp-accent');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);if(a&&a!=='blue')document.documentElement.setAttribute('data-accent',a);}catch(e){}})();
+</script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><marker id="dgA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="dg-head"/></marker><marker id="dgM" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="dg-head m"/></marker><marker id="dgR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="dg-head r"/></marker><marker id="dgG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="dg-head g"/></marker></defs></svg>
@@ -463,6 +492,20 @@ pre.given{margin:0;white-space:pre;display:block;line-height:1.6}
       <a href="#async" data-view="async">Async Web</a>
       <a href="#activity" data-view="activity">Activity</a>
     </nav>
+    <div class="appearance">
+      <div class="seg sm" role="group" aria-label="Theme">
+        <button type="button" data-theme-set="auto" aria-pressed="true" title="Follow your device setting">Auto</button>
+        <button type="button" data-theme-set="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-set="dark" aria-pressed="false">Dark</button>
+      </div>
+      <div class="swatches" role="group" aria-label="Theme colour">
+        <button type="button" data-accent-set="blue" aria-pressed="true" title="Blue" aria-label="Blue" style="background:#2747d6"></button>
+        <button type="button" data-accent-set="teal" aria-pressed="false" title="Teal" aria-label="Teal" style="background:#0f766e"></button>
+        <button type="button" data-accent-set="purple" aria-pressed="false" title="Purple" aria-label="Purple" style="background:#6d28d9"></button>
+        <button type="button" data-accent-set="green" aria-pressed="false" title="Green" aria-label="Green" style="background:#166534"></button>
+        <button type="button" data-accent-set="pink" aria-pressed="false" title="Pink" aria-label="Pink" style="background:#b0179e"></button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -3119,6 +3162,23 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='ArrowLeft'){e.preventDefault(); p.prev();}
   else if(e.key===' '&&tag!=='BUTTON'){e.preventDefault(); p.play();}
 });
+
+/* ---------------- appearance: theme + accent colour ---------------- */
+const rootEl=document.documentElement;
+const store=(k,v)=>{try{if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v);}catch(e){return null;}};
+function setTheme(t){
+  if(t==='light'||t==='dark') rootEl.setAttribute('data-theme',t); else rootEl.removeAttribute('data-theme');
+  document.querySelectorAll('[data-theme-set]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.themeSet===(t||'auto'))));
+  store('edp-theme',t||'auto');
+}
+function setAccent(a){
+  if(a&&a!=='blue') rootEl.setAttribute('data-accent',a); else rootEl.removeAttribute('data-accent');
+  document.querySelectorAll('[data-accent-set]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.accentSet===(a||'blue'))));
+  store('edp-accent',a||'blue');
+}
+document.querySelectorAll('[data-theme-set]').forEach(b=>b.addEventListener('click',()=>setTheme(b.dataset.themeSet)));
+document.querySelectorAll('[data-accent-set]').forEach(b=>b.addEventListener('click',()=>setAccent(b.dataset.accentSet)));
+setTheme(store('edp-theme')||'auto'); setAccent(store('edp-accent')||'blue');
 
 /* ---------------- key terms ---------------- */
 document.querySelectorAll('.terms-sec[data-glossary]').forEach(sec=>{

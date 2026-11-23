@@ -5,7 +5,7 @@ const html=fs.readFileSync(file,'utf8');
 const blocks=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]);
 const G={}; G.window=G; G.globalThis=G;
 vm.createContext(G);
-blocks.slice(0,3).forEach((b,i)=>vm.runInContext(b,G,{filename:'block'+i}));
+blocks.filter(b=>/root\.EDP_SIM=|window\.EDP_GLOSSARY=|root\.EDP_ACT=/.test(b)).forEach((b,i)=>vm.runInContext(b,G,{filename:'block'+i}));
 const SIM=G.EDP_SIM, A=G.EDP_ACT, GL=G.EDP_GLOSSARY;
 let fails=0, checks=0;
 const bad=(msg,ctx)=>{fails++; if(fails<=40) console.log('FAIL:',msg,ctx?JSON.stringify(ctx).slice(0,400):'');};
