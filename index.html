@@ -444,19 +444,22 @@ pre.given{margin:0;white-space:pre;display:block;line-height:1.6}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* appearance: theme mode + accent colour (blue is the default above) */
-:root[data-accent="teal"]{--accent:#0f766e;--accent-soft:#d3f1ec}
-:root[data-accent="purple"]{--accent:#6d28d9;--accent-soft:#ece3ff}
 :root[data-accent="green"]{--accent:#166534;--accent-soft:#dcf3e3}
+:root[data-accent="orange"]{--accent:#b3410b;--accent-soft:#ffe8d9}
+:root[data-accent="red"]{--accent:#b91c1c;--accent-soft:#fde2e2}
+:root[data-accent="yellow"]{--accent:#8a6100;--accent-soft:#fbf0c8}
 :root[data-accent="pink"]{--accent:#b0179e;--accent-soft:#fbe3f8}
 @media (prefers-color-scheme:dark){
-  :root[data-accent="teal"]:not([data-theme="light"]){--accent:#2dd4bf;--accent-soft:#0e3532}
-  :root[data-accent="purple"]:not([data-theme="light"]){--accent:#b197fc;--accent-soft:#2a2049}
   :root[data-accent="green"]:not([data-theme="light"]){--accent:#4ade80;--accent-soft:#12331f}
+  :root[data-accent="orange"]:not([data-theme="light"]){--accent:#fb923c;--accent-soft:#3a2212}
+  :root[data-accent="red"]:not([data-theme="light"]){--accent:#f87171;--accent-soft:#3d1517}
+  :root[data-accent="yellow"]:not([data-theme="light"]){--accent:#facc15;--accent-soft:#3a3010}
   :root[data-accent="pink"]:not([data-theme="light"]){--accent:#f39ce8;--accent-soft:#3b1638}
 }
-:root[data-theme="dark"][data-accent="teal"]{--accent:#2dd4bf;--accent-soft:#0e3532}
-:root[data-theme="dark"][data-accent="purple"]{--accent:#b197fc;--accent-soft:#2a2049}
 :root[data-theme="dark"][data-accent="green"]{--accent:#4ade80;--accent-soft:#12331f}
+:root[data-theme="dark"][data-accent="orange"]{--accent:#fb923c;--accent-soft:#3a2212}
+:root[data-theme="dark"][data-accent="red"]{--accent:#f87171;--accent-soft:#3d1517}
+:root[data-theme="dark"][data-accent="yellow"]{--accent:#facc15;--accent-soft:#3a3010}
 :root[data-theme="dark"][data-accent="pink"]{--accent:#f39ce8;--accent-soft:#3b1638}
 .brand{order:1}
 .appearance{order:2;margin-left:auto;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
@@ -470,7 +473,7 @@ nav.tabs{order:3}
 </style>
 <script>
 /* apply the saved appearance before the page paints */
-(function(){try{var t=localStorage.getItem('edp-theme'),a=localStorage.getItem('edp-accent');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);if(a&&a!=='blue')document.documentElement.setAttribute('data-accent',a);}catch(e){}})();
+(function(){try{var t=localStorage.getItem('edp-theme'),a=localStorage.getItem('edp-accent');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);if(/^(green|orange|red|yellow|pink)$/.test(a))document.documentElement.setAttribute('data-accent',a);}catch(e){}})();
 </script>
 </head>
 <body>
@@ -499,11 +502,12 @@ nav.tabs{order:3}
         <button type="button" data-theme-set="dark" aria-pressed="false">Dark</button>
       </div>
       <div class="swatches" role="group" aria-label="Theme colour">
-        <button type="button" data-accent-set="blue" aria-pressed="true" title="Blue" aria-label="Blue" style="background:#2747d6"></button>
-        <button type="button" data-accent-set="teal" aria-pressed="false" title="Teal" aria-label="Teal" style="background:#0f766e"></button>
-        <button type="button" data-accent-set="purple" aria-pressed="false" title="Purple" aria-label="Purple" style="background:#6d28d9"></button>
-        <button type="button" data-accent-set="green" aria-pressed="false" title="Green" aria-label="Green" style="background:#166534"></button>
-        <button type="button" data-accent-set="pink" aria-pressed="false" title="Pink" aria-label="Pink" style="background:#b0179e"></button>
+        <button type="button" data-accent-set="green" aria-pressed="false" title="Green" aria-label="Green" style="background:#22c55e"></button>
+        <button type="button" data-accent-set="orange" aria-pressed="false" title="Orange" aria-label="Orange" style="background:#f97316"></button>
+        <button type="button" data-accent-set="red" aria-pressed="false" title="Red" aria-label="Red" style="background:#ef4444"></button>
+        <button type="button" data-accent-set="blue" aria-pressed="true" title="Blue" aria-label="Blue" style="background:#3b5bdb"></button>
+        <button type="button" data-accent-set="yellow" aria-pressed="false" title="Yellow" aria-label="Yellow" style="background:#facc15"></button>
+        <button type="button" data-accent-set="pink" aria-pressed="false" title="Pink" aria-label="Pink" style="background:#ec4899"></button>
       </div>
     </div>
   </div>
@@ -3172,6 +3176,7 @@ function setTheme(t){
   store('edp-theme',t||'auto');
 }
 function setAccent(a){
+  if(!/^(green|orange|red|blue|yellow|pink)$/.test(a||'')) a='blue';
   if(a&&a!=='blue') rootEl.setAttribute('data-accent',a); else rootEl.removeAttribute('data-accent');
   document.querySelectorAll('[data-accent-set]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.accentSet===(a||'blue'))));
   store('edp-accent',a||'blue');
