@@ -410,6 +410,17 @@ pre.given{margin:0;white-space:pre;display:block;line-height:1.6}
 .cols > pre{min-width:0}
 .notes ol{max-width:80ch}
 
+/* keep the step controls on screen while a lab is in view */
+.lab{overflow:clip}
+.player{position:sticky;bottom:0;z-index:5;background:var(--surface);border-radius:0 0 14px 14px;box-shadow:0 -8px 16px -12px rgba(0,0,0,.45)}
+.code{max-height:min(440px,max(200px,calc(100vh - 390px)));overflow:auto}
+.gui-pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.box.dim{opacity:.55}
+.gui-count{margin:0}
+.gui-count b{color:var(--ink);font-family:var(--f-mono)}
+.calc-keys button{height:36px}
+.state-tbl td{padding:3px 8px}
+
 @media (max-width:920px){
   .lab-grid{grid-template-columns:minmax(0,1fr)}
   .side{border-left:0;border-top:1px solid var(--line)}
@@ -425,6 +436,9 @@ pre.given{margin:0;white-space:pre;display:block;line-height:1.6}
   .pc-scrub{flex-basis:100%;order:5}
   .pc-buttons .btn:not(.icon){padding:0 10px}
   .pc-buttons .btn.soft{min-width:0!important}
+  .player{padding:8px 10px;gap:6px 12px}
+  .pc-speed{display:none}
+  .pc-auto{font-size:.78rem}
   .calc-win{max-width:260px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -1044,7 +1058,7 @@ list.addEventListener('click', e => {
       <div class="field wide"><label for="gui-seq">Key sequence</label><input type="text" id="gui-seq" maxlength="24" value="12+3*2=" autocomplete="off"></div>
       <button class="btn soft" id="gui-type">Type it all</button>
       <button class="btn ghost" id="gui-reset">Reset</button>
-      <p class="hint">Click a key on the calculator to load that one click as steps. <b>Type it all</b> runs the whole sequence (digits, <code>+ - *</code>, <code>=</code> and <code>C</code>) and shows the steps for its <b>last</b> key.</p>
+      <p class="hint">Click a key on the calculator to load that one click as steps. <b>Type it all</b> clears the calculator, runs the whole sequence (digits, <code>+ - *</code>, <code>=</code> and <code>C</code>) and shows the steps for its <b>last</b> key.</p>
     </div>
     <div class="lab-grid">
       <div class="stage" id="gui-stage"></div>
@@ -3006,13 +3020,14 @@ function renderGui(f){
   const row=(k,v,on)=>'<tr'+(on?' class="chg"':'')+'><td>'+k+'</td><td>'+esc(v)+'</td></tr>';
   const c=hl.chg;
   const ktype=/\d/.test(hl.key)?'digit':hl.key==='='?'equals':hl.key==='C'?'clear':'op';
-  const evBox=hl.ev?'<div class="box"><span class="lbl">Event object e</span><table class="state-tbl"><tbody>'+row('e.type',"'click'")+row('e.target','button[data-type="'+ktype+'"] '+keyLab(hl.key))+row('e.currentTarget',hl.phase==='queue'?'null (not dispatched yet)':'#keys')+'</tbody></table></div>':'';
+  const evBox='<div class="box'+(hl.ev?'':' dim')+'"><span class="lbl">Event object e</span><table class="state-tbl"><tbody>'+
+    (hl.key&&hl.phase!=='idle'&&hl.phase!=='os'?row('type',"'click'")+row('target',keyLab(hl.key)+' button')+row('currentTarget',hl.phase==='queue'?'null (queued)':'#keys'):row('type','—')+row('target','—')+row('currentTarget','—'))+'</tbody></table></div>';
   $('gui-stage').innerHTML='<div class="gui-grid"><div class="calc-win"><div class="calc-bar"><i></i><i></i><i></i><span>Calculator</span></div><div class="calc-disp" aria-live="polite">'+esc(s.shown)+'</div><div class="calc-keys">'+keys+'</div></div>'+
-    '<div style="display:grid;gap:10px;min-width:0"><div class="pipeline">'+pipe+'</div>'+evBox+
+    '<div style="display:grid;gap:8px;min-width:0;align-content:start"><div class="pipeline">'+pipe+'</div><div class="gui-pair">'+evBox+
     '<div class="box"><span class="lbl">state (the model)</span><table class="state-tbl"><tbody>'+
       row('current',"'"+s.current+"'",c==='current'||c==='all')+row('stored',String(s.stored),c==='stored'||c==='all')+row('op',s.op===null?'null':"'"+s.op+"'",c==='op'||c==='all')+row('fresh',String(s.fresh),c==='fresh'||c==='all'||c==='op')+
-    '</tbody></table></div>'+
-    '<dl class="facts"><div><dt>On screen</dt><dd>'+esc(s.shown)+'</dd></div><div><dt>render() calls</dt><dd>'+s.renders+'</dd></div><div><dt>onEquals() calls</dt><dd>'+s.equals+'</dd></div></dl></div></div>';
+    '</tbody></table></div></div>'+
+    '<p class="muted gui-count">On screen: <b>'+esc(s.shown)+'</b> · render() calls: <b>'+s.renders+'</b> · onEquals() calls: <b>'+s.equals+'</b></p></div></div>';
 }
 const guiPlayer=new Player('gui',renderGui,5,true);
 function guiPress(k){const r=SIM.calcPress(guiState,k); guiState=r.st; guiPlayer.load(r.F,SIM.CALC_CODE,'click '+keyLab(k));}
@@ -3023,6 +3038,7 @@ $('gui-type').onclick=()=>{
   const seq=[...$('gui-seq').value.toUpperCase().replace(/[X×]/g,'*').replace(/[−–]/g,'-')].filter(ch=>/[0-9+\-*=C]/.test(ch)).slice(0,24);
   if(!seq.length){guiIdle('Type some keys first, for example <code>12+3*2=</code>.'); return;}
   $('gui-seq').value=seq.join('');
+  guiState=SIM.CALC_NEW();
   seq.slice(0,-1).forEach(k=>{guiState=SIM.calcApply(guiState,k);});
   guiPress(seq[seq.length-1]);
 };
